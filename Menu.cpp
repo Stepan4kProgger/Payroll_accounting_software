@@ -1,21 +1,21 @@
-#include "Menu.h"
+п»ї#include "Menu.h"
 using namespace std;
 
 HANDLE hWndConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 int ShowMenu(string title, ...) {
 	
-	va_list vl;  //получаем список переменных
-	va_start(vl, title); // получаем указатель на title
+	va_list vl;  //РїРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє РїРµСЂРµРјРµРЅРЅС‹С…
+	va_start(vl, title); // РїРѕР»СѓС‡Р°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° title
 
-	vector<string> menuItems; //вектор строк menu
+	vector<string> menuItems; //РІРµРєС‚РѕСЂ СЃС‚СЂРѕРє menu
 	string menuItem = va_arg(vl, char*);
 	while (menuItem != eof_menu) {
 		menuItems.emplace_back(menuItem);
 		menuItem = va_arg(vl, char*);
 	}
-	int menuItemsCount = (int)menuItems.size(); //получаем количество пунктов меню
-	int pos = 1, prev = 0; //pos - текущий элемент меню, prev - предыдущий
+	int menuItemsCount = (int)menuItems.size(); //РїРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓРЅРєС‚РѕРІ РјРµРЅСЋ
+	int pos = 1, prev = 0; //pos - С‚РµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ РјРµРЅСЋ, prev - РїСЂРµРґС‹РґСѓС‰РёР№
 	int menuIndex = -1;
 
 	system("cls");
@@ -23,35 +23,35 @@ int ShowMenu(string title, ...) {
 
 	SetConsoleTextAttribute(hWndConsole, 31);
 	setCur(0, getConsoleSize().Y - 2);
-	cout << "Используйте стрелки для навигации и нажмите Enter (или пробел), либо нажмите цифру на клавиатуре";
+	cout << "РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃС‚СЂРµР»РєРё РґР»СЏ РЅР°РІРёРіР°С†РёРё Рё РЅР°Р¶РјРёС‚Рµ Enter (РёР»Рё РїСЂРѕР±РµР»), Р»РёР±Рѕ РЅР°Р¶РјРёС‚Рµ С†РёС„СЂСѓ РЅР° РєР»Р°РІРёР°С‚СѓСЂРµ";
 
 	while (menuIndex == -1) {
-		if (pos != prev) { // не перерисовывать если ничего не изменилось
+		if (pos != prev) { // РЅРµ РїРµСЂРµСЂРёСЃРѕРІС‹РІР°С‚СЊ РµСЃР»Рё РЅРёС‡РµРіРѕ РЅРµ РёР·РјРµРЅРёР»РѕСЃСЊ
 			for (int i = 1; i <= menuItemsCount; i++) {
 				setCur(2, i + 1);
 				if (pos == i) SetConsoleTextAttribute(hWndConsole, 240);
-				else SetConsoleTextAttribute(hWndConsole, 15); //белый
+				else SetConsoleTextAttribute(hWndConsole, 15); //Р±РµР»С‹Р№
 				cout << i << ". " << menuItems[i - 1];
 			}
 			prev = pos;
 		}
 
-		setCur(0, getConsoleSize().Y - 1);  // опустить курсор
+		setCur(0, getConsoleSize().Y - 1);  // РѕРїСѓСЃС‚РёС‚СЊ РєСѓСЂСЃРѕСЂ
 		SetConsoleTextAttribute(hWndConsole, 15);
 
 		char key = _getch();
 		int key_int = (int)key - 48;
 
-		if (key_int > 0 && key_int <= menuItemsCount) return key_int;  // если нажата цифра
+		if (key_int > 0 && key_int <= menuItemsCount) return key_int;  // РµСЃР»Рё РЅР°Р¶Р°С‚Р° С†РёС„СЂР°
 		switch (key)
 		{
-		case 72:  //вверх
+		case 72:  //РІРІРµСЂС…
 			if (pos > 1) pos--;
 			break;
-		case 80:  //вниз
+		case 80:  //РІРЅРёР·
 			if (pos < menuItemsCount) pos++;
 			break;
-		case 13: case 32: //ввод  пробел
+		case 13: case 32: //РІРІРѕРґ  РїСЂРѕР±РµР»
 			menuIndex = pos;
 			break;
 		case 27: //esc

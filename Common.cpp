@@ -1,4 +1,4 @@
-#include "Common.h"
+Ôªø#include "Common.h"
 using namespace std;
 
 void setCur(SHORT x, SHORT y) {
@@ -18,7 +18,7 @@ COORD getConsoleSize() {
 	return size;
 }
 
-void ÒlearRow() {
+void —ÅlearRow() {
 	cout << "\r";
 	for (int i = 0; i < 16; i++) cout << "      ";
 	cout << "\r";
@@ -26,7 +26,7 @@ void ÒlearRow() {
 
 bool isFileExist(string filename) {
 	ifstream file(filename);
-	return file.is_open(); //Á‡ÍÓÂÚÒˇ Ò‡ÏÓÒÚÓˇÚÂÎ¸ÌÓ
+	return file.is_open(); //–∑–∞–∫—Ä–æ–µ—Ç—Å—è —Å–∞–º–æ—Å—Ç–æ—è—Ç–µ–ª—å–Ω–æ
 }
 
 void addInfoToFile(string filename, string info) {

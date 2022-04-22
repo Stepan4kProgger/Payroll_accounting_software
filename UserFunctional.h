@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "Menu.h"
 #include "Table.h"
 #include "Algorithms.h"
@@ -7,17 +7,17 @@ using std::vector;
 
 void initializeUser(string, int);
 
-const char mark_as_admin[26] = "Назначить администратором";
-const char mark_as_user[24] = "Назначить пользователем";
-const char mark_access_allow[19] = "Подтвердить доступ";
-const char mark_access_deny[21] = "Заблокировать доступ";
+const char mark_as_admin[26] = "РќР°Р·РЅР°С‡РёС‚СЊ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРј";
+const char mark_as_user[24] = "РќР°Р·РЅР°С‡РёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј";
+const char mark_access_allow[19] = "РџРѕРґС‚РІРµСЂРґРёС‚СЊ РґРѕСЃС‚СѓРї";
+const char mark_access_deny[21] = "Р—Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РґРѕСЃС‚СѓРї";
 
 class Session {
 	string login;
-	string headerUserText[4] = { "№","Логин","Уровень доступа","Доступ" };
-	string headerWorkerText[5] = { "№","ФИО сотрудника","Отдел","Должность","Размер з/п" };
-	string headerTaskText[3] = { "№", "Отдел", "Общая сумма выплат" };
-	string headerTask2Text[3] = { "№", "Отдел", "Среднемесячный заработок сотрудников" };
+	string headerUserText[4] = { "в„–","Р›РѕРіРёРЅ","РЈСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР°","Р”РѕСЃС‚СѓРї" };
+	string headerWorkerText[5] = { "в„–","Р¤РРћ СЃРѕС‚СЂСѓРґРЅРёРєР°","РћС‚РґРµР»","Р”РѕР»Р¶РЅРѕСЃС‚СЊ","Р Р°Р·РјРµСЂ Р·/Рї" };
+	string headerTaskText[3] = { "в„–", "РћС‚РґРµР»", "РћР±С‰Р°СЏ СЃСѓРјРјР° РІС‹РїР»Р°С‚" };
+	string headerTask2Text[3] = { "в„–", "РћС‚РґРµР»", "РЎСЂРµРґРЅРµРјРµСЃСЏС‡РЅС‹Р№ Р·Р°СЂР°Р±РѕС‚РѕРє СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ" };
 	vector<Worker> buf;
 	vector<Worker> workers;
 	vector<User> users;

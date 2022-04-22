@@ -1,21 +1,22 @@
-#include "Authentication.h"
+ï»¿#include "Authentication.h"
 using namespace std;
 
 string Hasher(string pas, string salt) {
 	int hash_buf = 1, p_size = pas.size();
-	string hash = "";
+	string hash = empty_string;
 	for (int i = 0; i < 4; i++)
-		hash_buf += (int)salt[i] / p_size;
-	hash_buf /= 25;
+		hash_buf += salt[i] / p_size;
+	hash_buf /= p_size;
 	for (int i = 0; i < p_size; i++)
 		hash_buf += hash_buf / pas[i];
 	for (int i = 0; i < 8; i++) {
 		char add;
 		if (i < 4)
-			add = hash_buf + salt[i] / p_size;
+			add = hash_buf + salt[i];
 		else
-			add = hash_buf + salt[i - 4] % (hash_buf + p_size);
-		if (add < 33) add += 38;
+			add = hash_buf + salt[i - 4] - p_size;
+		if (add > 128) add /= p_size / 3;
+		if (add < 33) add += p_size + 33;
 		hash += add;
 	}
 	return hash;
@@ -24,10 +25,10 @@ string Hasher(string pas, string salt) {
 bool createFile() {
 	int sw;
 	system("cls");
-	cout << "Ôàéë íå ñóùåñòâóåò. Ñîçäàòü åãî?\n1 - Äà\n";
+	cout << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÐµÑ‚. Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÑŒ ÐµÐ³Ð¾?\n1 - Ð”Ð°\n";
 	if (!(cin >> sw) || sw != 1) return false;
 	ofstream f(users_file); f.close();
-	cout << "Ôàéë ñîçäàí. Ó÷òèòå, ÷òî ñåé÷àñ â í¸ì íåò íè îäíîé ó÷¸òíîé çàïèñè\n"; //ó÷¸òíóþ çàïèñü ìîæíî àêòèâèðîâàòü, îòðåäàêòèðîâàâ òåêñòîâûé äîêóìåíò
+	cout << "Ð¤Ð°Ð¹Ð» ÑÐ¾Ð·Ð´Ð°Ð½. Ð£Ñ‡Ñ‚Ð¸Ñ‚Ðµ, Ñ‡Ñ‚Ð¾ ÑÐµÐ¹Ñ‡Ð°Ñ Ð² Ð½Ñ‘Ð¼ Ð½ÐµÑ‚ Ð½Ð¸ Ð¾Ð´Ð½Ð¾Ð¹ ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸\n"; //ÑƒÑ‡Ñ‘Ñ‚Ð½ÑƒÑŽ Ð·Ð°Ð¿Ð¸ÑÑŒ Ð¼Ð¾Ð¶Ð½Ð¾ Ð°ÐºÑ‚Ð¸Ð²Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ, Ð¾Ñ‚Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð² Ñ‚ÐµÐºÑÑ‚Ð¾Ð²Ñ‹Ð¹ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚
 	system("pause");
 	return true;
 }
@@ -35,7 +36,7 @@ bool createFile() {
 bool isFileEmpty() {
 	ifstream file(users_file, ios::binary | ios::ate);
 	if (file.tellg()) return false;
-	cout << "Ôàéë ïóñò!\n";
+	cout << "Ð¤Ð°Ð¹Ð» Ð¿ÑƒÑÑ‚!\n";
 	return true;
 }
 
@@ -80,10 +81,10 @@ string enterString(string title, bool is_password = false) {
 		else {
 			if (!isLoginLetter(act)) continue;
 			if (str.length() >= max_string_length) {
-				ñlearRow();
-				cout << "Ðàçìåð ýòîãî ïîëÿ íå ìîæåò ïðåâûøàòü " << max_string_length << "! Íàæìèòå ëþáóþ êëàâèøó äëÿ ïðîäîëæåíèÿ...";
+				ÑlearRow();
+				cout << "Ð Ð°Ð·Ð¼ÐµÑ€ ÑÑ‚Ð¾Ð³Ð¾ Ð¿Ð¾Ð»Ñ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°Ñ‚ÑŒ " << max_string_length << "! ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ Ð»ÑŽÐ±ÑƒÑŽ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð´Ð¾Ð»Ð¶ÐµÐ½Ð¸Ñ...";
 				str = _getch();
-				ñlearRow();
+				ÑlearRow();
 				str = empty_string;
 				continue;
 			}
@@ -105,7 +106,7 @@ bool isLoggedIn(string log, string pas, int &role) {
 			if (user.password == Hasher(pas, user.salt)) {
 				answer = true;
 				if (!user.access) {
-					cout << "Äàííàÿ ó÷¸òíàÿ çàïèñü íå ïîäòâåðæäåíà. Îáðàòèòåñü ê àäìèíèñòðàòîðó\n";
+					cout << "Ð”Ð°Ð½Ð½Ð°Ñ ÑƒÑ‡Ñ‘Ñ‚Ð½Ð°Ñ Ð·Ð°Ð¿Ð¸ÑÑŒ Ð½Ðµ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´ÐµÐ½Ð°. ÐžÐ±Ñ€Ð°Ñ‚Ð¸Ñ‚ÐµÑÑŒ Ðº Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€Ñƒ\n";
 					return false;
 				}
 				else role = user.role;
@@ -114,7 +115,7 @@ bool isLoggedIn(string log, string pas, int &role) {
 			else break;
 	}
 	if (!answer)
-		cout << "Ëîãèí èëè ïàðîëü íå ñîâïàäàþò\n";
+		cout << "Ð›Ð¾Ð³Ð¸Ð½ Ð¸Ð»Ð¸ Ð¿Ð°Ñ€Ð¾Ð»ÑŒ Ð½Ðµ ÑÐ¾Ð²Ð¿Ð°Ð´Ð°ÑŽÑ‚\n";
 	return answer;
 }
 
@@ -125,10 +126,10 @@ int LogIn(string &login) {
 		system("pause");
 		return 2;
 	}
-	cout << "Çàïîëíèòå ïîëÿ íèæå äëÿ èñïîëüçîâàíèÿ ïðîãðàììû (esc - îòìåíà)\n";
-	login = enterString("Ëîãèí");
+	cout << "Ð—Ð°Ð¿Ð¾Ð»Ð½Ð¸Ñ‚Ðµ Ð¿Ð¾Ð»Ñ Ð½Ð¸Ð¶Ðµ Ð´Ð»Ñ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹ (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)\n";
+	login = enterString("Ð›Ð¾Ð³Ð¸Ð½");
 	if (login == "") return 2;
-	password = enterString("Ïàðîëü", true);
+	password = enterString("ÐŸÐ°Ñ€Ð¾Ð»ÑŒ", true);
 	if (password == "") return 2;
 	int role;
 	if (!(isLoggedIn(login, password, role))) {
@@ -156,25 +157,25 @@ void regNewUser(string login, string password) {
 int Register() {
 	system("cls");
 	string login, password, repeat_password;
-	cout << "Çàïîëíèòå ïîëÿ íèæå äëÿ ðåãèñòðàöèè (esc - îòìåíà)\n";
-	if (isLoginInUse(login = enterString("Ëîãèí"))) {
-		cout << "Äàííûé ëîãèí çàíÿò. Èñïîëüçóéòå äðóãîé\n";
+	cout << "Ð—Ð°Ð¿Ð¾Ð»Ð½Ð¸Ñ‚Ðµ Ð¿Ð¾Ð»Ñ Ð½Ð¸Ð¶Ðµ Ð´Ð»Ñ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¸ (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)\n";
+	if (isLoginInUse(login = enterString("Ð›Ð¾Ð³Ð¸Ð½"))) {
+		cout << "Ð”Ð°Ð½Ð½Ñ‹Ð¹ Ð»Ð¾Ð³Ð¸Ð½ Ð·Ð°Ð½ÑÑ‚. Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ Ð´Ñ€ÑƒÐ³Ð¾Ð¹\n";
 		system("pause");
 		return 1;
 	}
 	if (login == "") return 2;
-	password = enterString("Ïàðîëü", true);
+	password = enterString("ÐŸÐ°Ñ€Ð¾Ð»ÑŒ", true);
 	if (password == "") return 2;
-	repeat_password = enterString("Ïîâòîðèòå ïàðîëü", true);
+	repeat_password = enterString("ÐŸÐ¾Ð²Ñ‚Ð¾Ñ€Ð¸Ñ‚Ðµ Ð¿Ð°Ñ€Ð¾Ð»ÑŒ", true);
 	if (repeat_password == "") return 2;
 	if (password == repeat_password)
 		regNewUser(login, password);
 	else {
-		cout << "Ïàðîëè íå ñîâïàäàþò\n";
+		cout << "ÐŸÐ°Ñ€Ð¾Ð»Ð¸ Ð½Ðµ ÑÐ¾Ð²Ð¿Ð°Ð´Ð°ÑŽÑ‚\n";
 		system("pause");
 		return 1;
 	}
-	cout << "Ðåãèñòðàöèÿ çàâåðøåíà. Äîæäèòåñü ïîäòâåðæäåíèÿ ó÷¸òíîé çàïèñè àäìèíèñòðàòîðîì\n";
+	cout << "Ð ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð°. Ð”Ð¾Ð¶Ð´Ð¸Ñ‚ÐµÑÑŒ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´ÐµÐ½Ð¸Ñ ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸ Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€Ð¾Ð¼\n";
 	system("pause");
 	return 2;
 }

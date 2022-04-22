@@ -1,4 +1,4 @@
-#include "UserFunctional.h"
+ï»¿#include "UserFunctional.h"
 using namespace std;
 
 const char* DefineRoleToChange(int inp) {
@@ -14,7 +14,8 @@ const char* DefineAccessToChange(int inp) {
 string enterRow(string title, bool is_numeric = false) {
 	bool arrow = false;
 	bool dot_again = false;
-	string str = "";
+	string str = empty_string;
+	int counter = 0;
 	cout << title << ":\n";
 	while (true) {
 		char ch = _getch();
@@ -41,24 +42,27 @@ string enterRow(string title, bool is_numeric = false) {
 				dot_again = false;
 			str.resize(str.length() - 1);
 			cout << backspace_attribute;
+			if (counter != 0) counter--;
 		}
 		else {
 			if (is_numeric) {
 				if (!isNumericLetter(ch)) continue;
 				if (ch == '.' && dot_again) continue;
+				if (counter >= 2) continue;
+				if (dot_again && (ch >= '0' && ch <= '9')) counter++;
 			}
 			else if (!isNameLetter(ch)) continue;
 			if ((str.length() >= max_name_length) || (is_numeric && str.length() >= max_salary_length)) {
-				ñlearRow();
-				cout << "Ðàçìåð ýòîãî ïîëÿ íå ìîæåò ïðåâûøàòü ";
+				ÑlearRow();
+				cout << "Ð Ð°Ð·Ð¼ÐµÑ€ ÑÑ‚Ð¾Ð³Ð¾ Ð¿Ð¾Ð»Ñ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°Ñ‚ÑŒ ";
 				if (!is_numeric) cout << max_name_length;
 				else {
 					cout << max_salary_length;
 					dot_again = false;
 				}
-				cout << "! Íàæìèòå ëþáóþ êëàâèøó äëÿ ïðîäîëæåíèÿ...";
+				cout << "! ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ Ð»ÑŽÐ±ÑƒÑŽ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð´Ð¾Ð»Ð¶ÐµÐ½Ð¸Ñ...";
 				ch = _getch();
-				ñlearRow();
+				ÑlearRow();
 				str = empty_string;
 				continue;
 			}
@@ -76,18 +80,19 @@ Session::Session(string login, int role) {
 	this->login = login;
 	this->role = role;
 	formLists();
-	cout << "Âû óñïåøíî âîøëè â ó÷¸òíóþ çàïèñü\n";
+	cout << "Ð’Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð²Ð¾ÑˆÐ»Ð¸ Ð² ÑƒÑ‡Ñ‘Ñ‚Ð½ÑƒÑŽ Ð·Ð°Ð¿Ð¸ÑÑŒ\n";
 	Sleep(1000);
 }
 
 Session::~Session() {
 	system("cls");
-	cout << "Ñîõðàíèòü èçìåíåíèÿ?\n1 - Äà\nÅñëè ñîõðàíåíèå íå òðåáóåòñÿ, íàæìèòå äðóãóþ êëàâèøó (íàïðèìåð esc)\n";
-	int in = _getch();
-	if (in == 1)
-		SaveAll();
+	if (role == 1) {
+		cout << "Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ?\n1 - Ð”Ð°\nÐ•ÑÐ»Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ Ð½Ðµ Ñ‚Ñ€ÐµÐ±ÑƒÐµÑ‚ÑÑ, Ð½Ð°Ð¶Ð¼Ð¸Ñ‚Ðµ Ð´Ñ€ÑƒÐ³ÑƒÑŽ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ (Ð½Ð°Ð¿Ñ€Ð¸Ð¼ÐµÑ€ esc)\n";
+		if (_getch() == '1')
+			SaveAll();
+	}
 	system("cls");
-	cout << "Âû óñïåøíî âûøëè èç ó÷¸òíîé çàïèñè\n";
+	cout << "Ð’Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð²Ñ‹ÑˆÐ»Ð¸ Ð¸Ð· ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸\n";
 	Sleep(1000);
 }
 
@@ -146,7 +151,7 @@ void Session::ShowWorkers(bool show_buf) {
 	if (!show_buf) limit = worker_amount;
 	else limit = buf.size();
 
-	float colsWidthP[] = { 4.0f, .4f, .25f, .2f }; // ðàçìåð â ïðîöåíòàõ. ïåðâûé ñòîëáåö â ñèìâîëàõ, ïîñëåäíèé ñòîëáåö íå óêàçûâàåòñÿ
+	float colsWidthP[] = { 4.0f, .4f, .25f, .2f }; // Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð² Ð¿Ñ€Ð¾Ñ†ÐµÐ½Ñ‚Ð°Ñ…. Ð¿ÐµÑ€Ð²Ñ‹Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð² ÑÐ¸Ð¼Ð²Ð¾Ð»Ð°Ñ…, Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð½Ðµ ÑƒÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ
 	int colCount = sizeof(colsWidthP) / sizeof(float);
 	drawTaleText(colsWidthP, colCount, true, headerWorkerText);
 	for (int i = 0; i < limit; i++) {
@@ -176,7 +181,7 @@ void Session::IndividualTask(int option) {
 		string str_buf = buf[0].department_name;
 		int counter = 1, local_counter = 1;
 		double sum = buf[0].salary_size;
-		float colsWidthP[] = { 4.f, .5f }; // ðàçìåð â ïðîöåíòàõ. ïåðâûé ñòîëáåö â ñèìâîëàõ, ïîñëåäíèé ñòîëáåö íå óêàçûâàåòñÿ
+		float colsWidthP[] = { 4.f, .5f }; // Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð² Ð¿Ñ€Ð¾Ñ†ÐµÐ½Ñ‚Ð°Ñ…. Ð¿ÐµÑ€Ð²Ñ‹Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð² ÑÐ¸Ð¼Ð²Ð¾Ð»Ð°Ñ…, Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð½Ðµ ÑƒÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ
 		int colCount = sizeof(colsWidthP) / sizeof(float);
 		if (option == 1) drawTaleText(colsWidthP, colCount, true, headerTaskText);
 		else drawTaleText(colsWidthP, colCount, true, headerTask2Text);
@@ -208,7 +213,7 @@ void Session::IndividualTask(int option) {
 	else {
 		double key;
 		int counter = 0;
-		string salary = enterRow("Ââåäèòå ñðåäíåìåñÿ÷íûé ðàçìåð ç/ï ñîòðóäíèêà (äëÿ äðîáíîé âåëè÷èíû èñïîëüçóéòå \".\")", true);
+		string salary = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ€ÐµÐ´Ð½ÐµÐ¼ÐµÑÑÑ‡Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð·/Ð¿ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð´Ð»Ñ Ð´Ñ€Ð¾Ð±Ð½Ð¾Ð¹ Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ \".\")", true);
 		if (salary == empty_string) return;
 		key = stod(salary);
 
@@ -218,11 +223,11 @@ void Session::IndividualTask(int option) {
 				counter++;
 			}
 		if (counter == 0) {
-			cout << "Òàêèõ ñîòðóäíèêîâ íå íàéäåíî\n";
+			cout << "Ð¢Ð°ÐºÐ¸Ñ… ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð² Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾\n";
 			return;
 		}
 		ShowWorkers(true);
-		cout << "Íàéäåíî " << counter << " ñîâïàäåíèé\n";
+		cout << "ÐÐ°Ð¹Ð´ÐµÐ½Ð¾ " << counter << " ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¹\n";
 	}
 	buf.clear();
 	system("pause");
@@ -233,17 +238,17 @@ void Session::SearchWorkers() {
 	if (isListEmpty(worker_amount))
 		return;
 	while (true) {
-		int answer = ShowMenu("Âûáåðèòå ïàðàìåòð ïîèñêà (esc - îòìåíà)",
-			"Ïî ÔÈÎ",
-			"Ïî îòäåëó",
-			"Ïî äîëæíîñòè", eof_menu);
+		int answer = ShowMenu("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ Ð¿Ð¾Ð¸ÑÐºÐ° (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)",
+			"ÐŸÐ¾ Ð¤Ð˜Ðž",
+			"ÐŸÐ¾ Ð¾Ñ‚Ð´ÐµÐ»Ñƒ",
+			"ÐŸÐ¾ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚Ð¸", eof_menu);
 		string key;
 		int counter = 0;
 		
 		system("cls");
 		switch (answer) {
 		case 1:
-			key = enterRow("Ââåäèòå ÔÈÎ ñîòðóäíèêà (ìîæíî ââåñòè ÷àñòè÷íî)");
+			key = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¤Ð˜Ðž ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð¼Ð¾Ð¶Ð½Ð¾ Ð²Ð²ÐµÑÑ‚Ð¸ Ñ‡Ð°ÑÑ‚Ð¸Ñ‡Ð½Ð¾)");
 			if (key == empty_string) break;
 			for (int i = 0; i < worker_amount; i++)
 				if (workers[i].full_name.find(key) != -1) {
@@ -252,7 +257,7 @@ void Session::SearchWorkers() {
 				}
 			break;
 		case 2:
-			key = enterRow("Ââåäèòå îòäåë ñîòðóäíèêà (ìîæíî ââåñòè ÷àñòè÷íî)");
+			key = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¾Ñ‚Ð´ÐµÐ» ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð¼Ð¾Ð¶Ð½Ð¾ Ð²Ð²ÐµÑÑ‚Ð¸ Ñ‡Ð°ÑÑ‚Ð¸Ñ‡Ð½Ð¾)");
 			if (key == empty_string) break;
 			for (int i = 0; i < worker_amount; i++) 
 				if (workers[i].department_name.find(key) != -1) {
@@ -261,7 +266,7 @@ void Session::SearchWorkers() {
 				}
 			break;
 		case 3:
-			key = enterRow("Ââåäèòå äîëæíîñòü ñîòðóäíèêà (ìîæíî ââåñòè ÷àñòè÷íî)");
+			key = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚ÑŒ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð¼Ð¾Ð¶Ð½Ð¾ Ð²Ð²ÐµÑÑ‚Ð¸ Ñ‡Ð°ÑÑ‚Ð¸Ñ‡Ð½Ð¾)");
 			if (key == empty_string) break;
 			for (int i = 0; i < worker_amount; i++) 
 				if (workers[i].post.find(key) != -1) {
@@ -276,9 +281,9 @@ void Session::SearchWorkers() {
 		else if (answer == 0) break;
 		else if (counter != 0) {
 			ShowWorkers(true);
-			cout << "Íàéäåíî " << counter << " ñîâïàäåíèé\n";
+			cout << "ÐÐ°Ð¹Ð´ÐµÐ½Ð¾ " << counter << " ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¹\n";
 		}
-		else cout << "Ñîâïàäåíèé íå íàéäåíî\n";
+		else cout << "Ð¡Ð¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¹ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾\n";
 		buf.clear();
 		system("pause");
 	}
@@ -289,14 +294,14 @@ void Session::SortWorkers() {
 	if (isListEmpty(worker_amount))
 		return;
 	bool reverse = false;
-	cout << "Âûáåðèòå ïîðÿäîê ñîðòèðîâêè\n1 - Ïî âîçðàñòàíèþ\nÈíîé âûáîð - ïî óáûâàíèþ\n";
+	cout << "Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð¿Ð¾Ñ€ÑÐ´Ð¾Ðº ÑÐ¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ¸\n1 - ÐŸÐ¾ Ð²Ð¾Ð·Ñ€Ð°ÑÑ‚Ð°Ð½Ð¸ÑŽ\nÐ˜Ð½Ð¾Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€ - Ð¿Ð¾ ÑƒÐ±Ñ‹Ð²Ð°Ð½Ð¸ÑŽ\n";
 	if (_getch() == '1') reverse = true;
 	buf = workers;
-	int answer = ShowMenu("Âûáåðèòå ïàðàìåòð ñîðòèðîâêè (esc - îòìåíà)",
-		"Ïî ÔÈÎ",
-		"Ïî íàçâàíèþ îòäåëà",
-		"Ïî íàçâàíèþ äîëæíîñòè",
-		"Ïî ðàçìåðó ç/ï", eof_menu);
+	int answer = ShowMenu("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ ÑÐ¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ¸ (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)",
+		"ÐŸÐ¾ Ð¤Ð˜Ðž",
+		"ÐŸÐ¾ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÑŽ Ð¾Ñ‚Ð´ÐµÐ»Ð°",
+		"ÐŸÐ¾ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÑŽ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚Ð¸",
+		"ÐŸÐ¾ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñƒ Ð·/Ð¿", eof_menu);
 	if (answer != 0) sortFunc(answer, reverse);
 	else return;
 	workers = buf;
@@ -306,12 +311,12 @@ void Session::SortWorkers() {
 
 void Session::AdminFunctional() {
 	while (true) {
-		int answer = ShowMenu("Àäìèí-ìåíþ | Âûáåðèòå äåéñòâèå (esc - ïåðåéòè â îñíîâíîå ìåíþ)",
-			"Äîáàâèòü ñîòðóäíèêà",
-			"Èçìåíèòü äàííûå ñîòðóäíèêà",
-			"Ïðîñìîòð âñå ó÷¸òíûå çàïèñè",
-			"Èçìåíèòü äàííûå ó÷¸òíîé çàïèñè",
-			"Ïðèìåíèòü âñå èçìåíåíèÿ ê ôàéëàì", eof_menu);
+		int answer = ShowMenu("ÐÐ´Ð¼Ð¸Ð½-Ð¼ÐµÐ½ÑŽ | Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ (esc - Ð¿ÐµÑ€ÐµÐ¹Ñ‚Ð¸ Ð² Ð¾ÑÐ½Ð¾Ð²Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ)",
+			"Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°",
+			"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°",
+			"ÐŸÑ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ÐµÑ‚ÑŒ Ð²ÑÐµ ÑƒÑ‡Ñ‘Ñ‚Ð½Ñ‹Ðµ Ð·Ð°Ð¿Ð¸ÑÐ¸",
+			"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸",
+			"ÐŸÑ€Ð¸Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð²ÑÐµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ðº Ñ„Ð°Ð¹Ð»Ð°Ð¼", eof_menu);
 		switch (answer) {
 		case 1:
 			AddWorker();
@@ -337,20 +342,20 @@ void Session::AdminFunctional() {
 
 void Session::AddWorker() {
 	system("cls");
-	cout << "Íà ëþáîì ýòàïå ââîäà Âû ìîæåòå âåðíóòüñÿ â ìåíþ, íàæàâ esc\n";
+	cout << "ÐÐ° Ð»ÑŽÐ±Ð¾Ð¼ ÑÑ‚Ð°Ð¿Ðµ Ð²Ð²Ð¾Ð´Ð° Ð’Ñ‹ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒÑÑ Ð² Ð¼ÐµÐ½ÑŽ, Ð½Ð°Ð¶Ð°Ð² esc\n";
 	Worker worker;
-	worker.full_name = enterRow("Ââåäèòå ÔÈÎ ñîòðóäíèêà");
+	worker.full_name = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¤Ð˜Ðž ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 	if (worker.full_name == empty_string) return;
-	worker.department_name = enterRow("Ââåäèòå îòäåë ñîòðóäíèêà");
+	worker.department_name = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¾Ñ‚Ð´ÐµÐ» ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 	if (worker.department_name == empty_string) return;
-	worker.post = enterRow("Ââåäèòå äîëæíîñòü ñîòðóäíèêà");
+	worker.post = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚ÑŒ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 	if (worker.post == empty_string) return;
-	string salary = enterRow("Ââåäèòå ñðåäíåìåñÿ÷íûé ðàçìåð ç/ï ñîòðóäíèêà (äëÿ äðîáíîé âåëè÷èíû èñïîëüçóéòå \".\")", true);
+	string salary = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ€ÐµÐ´Ð½ÐµÐ¼ÐµÑÑÑ‡Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð·/Ð¿ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð´Ð»Ñ Ð´Ñ€Ð¾Ð±Ð½Ð¾Ð¹ Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ \".\")", true);
 	if (salary == empty_string) return;
 	worker.salary_size = stod(salary);
 	workers.push_back(worker);
 	worker_amount++;
-	cout << "Ñîòðóäíèê óñïåøíî äîáàâëåí\n";
+	cout << "Ð¡Ð¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½\n";
 	system("pause");
 }
 
@@ -361,41 +366,41 @@ void Session::EditWorker() {
 			return;
 		ShowWorkers();
 		int num;
-		cout << "Ââåäèòå íîìåð ñîòðóäíèêà, äàííûå êîòîðîãî âû õîòèòå èçìåíèòü (0 - îòìåíà)\n";
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°, Ð´Ð°Ð½Ð½Ñ‹Ðµ ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð³Ð¾ Ð²Ñ‹ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ (0 - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)\n";
 		if (!(cin >> num) || num < 1 || num > worker_amount) {
 			system("cls");
-			cout << "Íè÷åãî íå èçìåíåíî\n";
+			cout << "ÐÐ¸Ñ‡ÐµÐ³Ð¾ Ð½Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¾\n";
 			system("pause");
 			return;
 		}
 		Worker temp = workers[--num];
 		string str;
 		while (true) {
-			int answer = ShowMenu("Âûáðàííûé ñîòðóäíèê: \"" + workers[num].full_name + "\" | Âûáåðèòå äåéñòâèå (esc - îòìåíà)",
-				"Èçìåíèòü ÔÈÎ",
-				"Èçìåíèòü îòäåë",
-				"Èçìåíèòü äîëæíîñòü",
-				"Èçìåíèòü ðàçìåð ç/ï",
-				"Óäàëèòü ñîòðóäíèêà", eof_menu);
+			int answer = ShowMenu("Ð’Ñ‹Ð±Ñ€Ð°Ð½Ð½Ñ‹Ð¹ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº: \"" + workers[num].full_name + "\" | Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)",
+				"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¤Ð˜Ðž",
+				"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¾Ñ‚Ð´ÐµÐ»",
+				"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚ÑŒ",
+				"Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð·/Ð¿",
+				"Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°", eof_menu);
 			system("cls");
 			switch (answer) {
 			case 1:
-				str = enterRow("Ââåäèòå ÔÈÎ ñîòðóäíèêà");
+				str = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¤Ð˜Ðž ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 				if (str == empty_string) break;
 				temp.full_name = str;
 				break;
 			case 2:
-				str = enterRow("Ââåäèòå îòäåë ñîòðóäíèêà");
+				str = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¾Ñ‚Ð´ÐµÐ» ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 				if (str == empty_string) break;
 				temp.department_name = str;
 				break;
 			case 3:
-				str = enterRow("Ââåäèòå äîëæíîñòü ñîòðóäíèêà");
+				str = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚ÑŒ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°");
 				if (str == empty_string) break;
 				temp.post = str;
 				break;
 			case 4:
-				str = enterRow("Ââåäèòå ñðåäíåìåñÿ÷íûé ðàçìåð ç/ï ñîòðóäíèêà (äëÿ äðîáíîé âåëè÷èíû èñïîëüçóéòå \".\")", true);
+				str = enterRow("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ€ÐµÐ´Ð½ÐµÐ¼ÐµÑÑÑ‡Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð·/Ð¿ ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ° (Ð´Ð»Ñ Ð´Ñ€Ð¾Ð±Ð½Ð¾Ð¹ Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ \".\")", true);
 				if (str == empty_string) break;
 				temp.salary_size = stod(str);
 				break;
@@ -409,11 +414,11 @@ void Session::EditWorker() {
 			if (answer == 0) break;
 			if (answer != 5) {
 				workers[num] = temp;
-				cout << "Äàííûå èçìåíåíû óñïåøíî\n";
+				cout << "Ð”Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾\n";
 				system("pause");
 			}
 			else {
-				cout << "Ñîòðóäíèê óñïåøíî óäàë¸í èç ñïèñêà\n";
+				cout << "Ð¡Ð¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÑƒÐ´Ð°Ð»Ñ‘Ð½ Ð¸Ð· ÑÐ¿Ð¸ÑÐºÐ°\n";
 				system("pause");
 				break;
 			}
@@ -427,15 +432,15 @@ void Session::ShowUsers() {
 	if (isListEmpty(user_amount))
 		return;
 
-	float colsWidthP[] = { 4.f, .3f , .3f }; // ðàçìåð â ïðîöåíòàõ. ïåðâûé ñòîëáåö â ñèìâîëàõ, ïîñëåäíèé ñòîëáåö íå óêàçûâàåòñÿ
+	float colsWidthP[] = { 4.f, .3f , .3f }; // Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð² Ð¿Ñ€Ð¾Ñ†ÐµÐ½Ñ‚Ð°Ñ…. Ð¿ÐµÑ€Ð²Ñ‹Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð² ÑÐ¸Ð¼Ð²Ð¾Ð»Ð°Ñ…, Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ð¹ ÑÑ‚Ð¾Ð»Ð±ÐµÑ† Ð½Ðµ ÑƒÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ
 	int colCount = sizeof(colsWidthP) / sizeof(float);
 	drawTaleText(colsWidthP, colCount, true, headerUserText);
 	for (int i = 0; i < user_amount; i++) {
 		string role, access;
-		if (users[i].role) role = "Àäìèíèñòðàòîð";
-		else role = "Ïîëüçîâàòåëü";
-		if (users[i].access) access = "Åñòü";
-		else access = "Íå ïîäòâåðæä¸í";
+		if (users[i].role) role = "ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€";
+		else role = "ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ";
+		if (users[i].access) access = "Ð•ÑÑ‚ÑŒ";
+		else access = "ÐÐµ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´Ñ‘Ð½";
 		string Text[] = { to_string(i + 1), users[i].login, role, access };
 
 		drawTaleText(colsWidthP, colCount, false, Text);
@@ -451,26 +456,26 @@ void Session::EditUser() {
 			return;
 		ShowUsers();
 		int num;
-		cout << "Ââåäèòå íîìåð ó÷¸òíîé çàïèñè, äàííûå êîòîðîé âû õîòèòå èçìåíèòü (0 - îòìåíà)\n";
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸, Ð´Ð°Ð½Ð½Ñ‹Ðµ ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð¹ Ð²Ñ‹ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ (0 - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)\n";
 		if (!(cin >> num) || num < 1 || num > user_amount) {
 			system("cls");
-			cout << "Íè÷åãî íå èçìåíåíî\n";
+			cout << "ÐÐ¸Ñ‡ÐµÐ³Ð¾ Ð½Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¾\n";
 			system("pause");
 			return;
 		}
 		User temp = users[--num];
 		if (temp.login == login) {
 			system("cls");
-			cout << "Â öåëÿõ áåçîïàñíîñòè, âû íå ìîæåòå ðåäàêòèðîâàòü òåêóùóþ ó÷¸òíóþ çàïèñü\n";
+			cout << "Ð’ Ñ†ÐµÐ»ÑÑ… Ð±ÐµÐ·Ð¾Ð¿Ð°ÑÐ½Ð¾ÑÑ‚Ð¸, Ð²Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ñ‚ÐµÐºÑƒÑ‰ÑƒÑŽ ÑƒÑ‡Ñ‘Ñ‚Ð½ÑƒÑŽ Ð·Ð°Ð¿Ð¸ÑÑŒ\n";
 			system("pause");
 			continue;
 		}
 		
 		while (true) {
-			int answer = ShowMenu("Âûáðàíà ó÷¸òíàÿ çàïèñü ñ ëîãèíîì: \"" + users[num].login + "\" | Âûáåðèòå äåéñòâèå (esc - îòìåíà)",
+			int answer = ShowMenu("Ð’Ñ‹Ð±Ñ€Ð°Ð½Ð° ÑƒÑ‡Ñ‘Ñ‚Ð½Ð°Ñ Ð·Ð°Ð¿Ð¸ÑÑŒ Ñ Ð»Ð¾Ð³Ð¸Ð½Ð¾Ð¼: \"" + users[num].login + "\" | Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ (esc - Ð¾Ñ‚Ð¼ÐµÐ½Ð°)",
 				DefineRoleToChange(temp.role),
 				DefineAccessToChange(temp.access),
-				"Óäàëèòü ó÷¸òíóþ çàïèñü", eof_menu);
+				"Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ ÑƒÑ‡Ñ‘Ñ‚Ð½ÑƒÑŽ Ð·Ð°Ð¿Ð¸ÑÑŒ", eof_menu);
 			system("cls");
 			switch (answer) {
 			case 1:
@@ -495,11 +500,11 @@ void Session::EditUser() {
 			if (answer == 0) break;
 			if (answer != 3) {
 				users[num] = temp;
-				cout << "Äàííûå èçìåíåíû óñïåøíî\n";
+				cout << "Ð”Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾\n";
 				system("pause");
 			}
 			else {
-				cout << "Ó÷¸òíàÿ çàïèñü óñïåøíî óäàëåíà èç ñïèñêà\n";
+				cout << "Ð£Ñ‡Ñ‘Ñ‚Ð½Ð°Ñ Ð·Ð°Ð¿Ð¸ÑÑŒ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÑƒÐ´Ð°Ð»ÐµÐ½Ð° Ð¸Ð· ÑÐ¿Ð¸ÑÐºÐ°\n";
 				system("pause");
 				break;
 			}
@@ -508,7 +513,7 @@ void Session::EditUser() {
 }
 
 void Session::SaveAll() {
-	ofstream file(users_file); //î÷èñòêà è çàïèñü
+	ofstream file(users_file); //Ð¾Ñ‡Ð¸ÑÑ‚ÐºÐ° Ð¸ Ð·Ð°Ð¿Ð¸ÑÑŒ
 	file.close();
 	file.open(users_file, ios_base::app);
 	for (int i = 0; i < user_amount; i++)
@@ -521,7 +526,7 @@ void Session::SaveAll() {
 		file << workerToStr(workers[i]) + "\n";
 	file.close();
 	system("cls");
-	cout << "Âñå èçìåíåíèÿ ñîõðàíåíû óñïåøíî\n";
+	cout << "Ð’ÑÐµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾\n";
 	system("pause");
 }
 
@@ -530,22 +535,22 @@ void initializeUser(string login, int role) {
 	while (true) {
 		int answer;
 		if (role == 0)
-			answer = ShowMenu("Äîáðî ïîæàëîâàòü, ïîëüçîâàòåëü! | Âûáåðèòå äåéñòâèå (esc - âûéòè èç ó÷¸òíîé çàïèñè)",
-				"Ïðîñìîòð ïîëíîãî ñïèñêà ñîòðóäíèêîâ",
-				"Âû÷èñëèòü îáùóþ ñóììó âûïëàò çà ìåñÿö ïî êàæäîìó îòäåëó",
-				"Âû÷èñëèòü ñðåäíåìåñÿ÷íûé çàðàáîòîê ñîòðóäíèêîâ ïî êàæäîìó îòäåëó",
-				"Âûâåñòè ñïèñîê ñîòðóäíèêîâ, ó êîòîðûõ çàðïëàòà íèæå ââåä¸ííîé ñ êëàâèàòóðû",
-				"Ïîèñê ïî äàííûì",
-				"Ñîðòèðîâêà ïî äàííûì", eof_menu);
+			answer = ShowMenu("Ð”Ð¾Ð±Ñ€Ð¾ Ð¿Ð¾Ð¶Ð°Ð»Ð¾Ð²Ð°Ñ‚ÑŒ, Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ! | Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ (esc - Ð²Ñ‹Ð¹Ñ‚Ð¸ Ð¸Ð· ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸)",
+				"ÐŸÑ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ Ð¿Ð¾Ð»Ð½Ð¾Ð³Ð¾ ÑÐ¿Ð¸ÑÐºÐ° ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð²",
+				"Ð’Ñ‹Ñ‡Ð¸ÑÐ»Ð¸Ñ‚ÑŒ Ð¾Ð±Ñ‰ÑƒÑŽ ÑÑƒÐ¼Ð¼Ñƒ Ð²Ñ‹Ð¿Ð»Ð°Ñ‚ Ð·Ð° Ð¼ÐµÑÑÑ† Ð¿Ð¾ ÐºÐ°Ð¶Ð´Ð¾Ð¼Ñƒ Ð¾Ñ‚Ð´ÐµÐ»Ñƒ",
+				"Ð’Ñ‹Ñ‡Ð¸ÑÐ»Ð¸Ñ‚ÑŒ ÑÑ€ÐµÐ´Ð½ÐµÐ¼ÐµÑÑÑ‡Ð½Ñ‹Ð¹ Ð·Ð°Ñ€Ð°Ð±Ð¾Ñ‚Ð¾Ðº ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð² Ð¿Ð¾ ÐºÐ°Ð¶Ð´Ð¾Ð¼Ñƒ Ð¾Ñ‚Ð´ÐµÐ»Ñƒ",
+				"Ð’Ñ‹Ð²ÐµÑÑ‚Ð¸ ÑÐ¿Ð¸ÑÐ¾Ðº ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð², Ñƒ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… Ð·Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ð° Ð½Ð¸Ð¶Ðµ Ð²Ð²ÐµÐ´Ñ‘Ð½Ð½Ð¾Ð¹ Ñ ÐºÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ñ‹",
+				"ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ð¼",
+				"Ð¡Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ° Ð¿Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ð¼", eof_menu);
 		else
-			answer = ShowMenu("Äîáðî ïîæàëîâàòü, àäìèíèñòðàòîð! | Âûáåðèòå äåéñòâèå (esc - âûéòè èç ó÷¸òíîé çàïèñè)",
-				"Ïðîñìîòð ïîëíîãî ñïèñêà ñîòðóäíèêîâ",
-				"Âû÷èñëèòü îáùóþ ñóììó âûïëàò çà ìåñÿö ïî êàæäîìó îòäåëó",
-				"Âû÷èñëèòü ñðåäíåìåñÿ÷íûé çàðàáîòîê ñîòðóäíèêîâ ïî êàæäîìó îòäåëó",
-				"Âûâåñòè ñïèñîê ñîòðóäíèêîâ, ó êîòîðûõ çàðïëàòà íèæå ââåä¸ííîé ñ êëàâèàòóðû",
-				"Ïîèñê ïî äàííûì",
-				"Ñîðòèðîâêà ïî äàííûì",
-				"Ïåðåéòè ê ôóíêöèîíàëüíûì âîçìîæíîñòÿì àäìèíèñòðàòîðà", eof_menu);
+			answer = ShowMenu("Ð”Ð¾Ð±Ñ€Ð¾ Ð¿Ð¾Ð¶Ð°Ð»Ð¾Ð²Ð°Ñ‚ÑŒ, Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€! | Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ (esc - Ð²Ñ‹Ð¹Ñ‚Ð¸ Ð¸Ð· ÑƒÑ‡Ñ‘Ñ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸)",
+				"ÐŸÑ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ Ð¿Ð¾Ð»Ð½Ð¾Ð³Ð¾ ÑÐ¿Ð¸ÑÐºÐ° ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð²",
+				"Ð’Ñ‹Ñ‡Ð¸ÑÐ»Ð¸Ñ‚ÑŒ Ð¾Ð±Ñ‰ÑƒÑŽ ÑÑƒÐ¼Ð¼Ñƒ Ð²Ñ‹Ð¿Ð»Ð°Ñ‚ Ð·Ð° Ð¼ÐµÑÑÑ† Ð¿Ð¾ ÐºÐ°Ð¶Ð´Ð¾Ð¼Ñƒ Ð¾Ñ‚Ð´ÐµÐ»Ñƒ",
+				"Ð’Ñ‹Ñ‡Ð¸ÑÐ»Ð¸Ñ‚ÑŒ ÑÑ€ÐµÐ´Ð½ÐµÐ¼ÐµÑÑÑ‡Ð½Ñ‹Ð¹ Ð·Ð°Ñ€Ð°Ð±Ð¾Ñ‚Ð¾Ðº ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð² Ð¿Ð¾ ÐºÐ°Ð¶Ð´Ð¾Ð¼Ñƒ Ð¾Ñ‚Ð´ÐµÐ»Ñƒ",
+				"Ð’Ñ‹Ð²ÐµÑÑ‚Ð¸ ÑÐ¿Ð¸ÑÐ¾Ðº ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ¾Ð², Ñƒ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… Ð·Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ð° Ð½Ð¸Ð¶Ðµ Ð²Ð²ÐµÐ´Ñ‘Ð½Ð½Ð¾Ð¹ Ñ ÐºÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ñ‹",
+				"ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ð¼",
+				"Ð¡Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ° Ð¿Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ð¼",
+				"ÐŸÐµÑ€ÐµÐ¹Ñ‚Ð¸ Ðº Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¼ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑ‚ÑÐ¼ Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€Ð°", eof_menu);
 		switch (answer) {
 		case 1:
 			user.ShowWorkers();

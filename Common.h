@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Windows.h>
 #include <iomanip>
 #include <vector>
@@ -31,7 +31,7 @@ const unsigned int max_name_length = 128;
 const unsigned int max_salary_length = 10;
 
 COORD getConsoleSize();
-void �learRow();
+void сlearRow();
 void addInfoToFile(string, string);
 bool isFileExist(const string);
 User strToUser(string);
