@@ -1,15 +1,15 @@
 ﻿#include "Table.h"
-using std::string;
-using std::cout;
+using namespace std;
 
 void coutSymbol(char symb, int count) {
     for (; count >= 0; count--) cout << symb;
 }
 
 string stringSerialize(string text, int width) {
-    if (width < text.length())
-        return text.substr(width - 4) + "...";
-
+    if (text.length() > width) {
+        text.resize(width - 3);
+        return text + "...";
+    }
     for (int i = text.length(); i < width; i++) text += " ";
     return text;
 }
