@@ -58,6 +58,7 @@ string enterRow(string title, bool is_numeric = false) {
 				if (!is_numeric) cout << max_name_length;
 				else {
 					cout << max_salary_length;
+					counter = 0;
 					dot_again = false;
 				}
 				cout << "! Нажмите любую клавишу для продолжения...";
@@ -305,6 +306,7 @@ void Session::SortWorkers() {
 	if (answer != 0) sortFunc(answer, reverse);
 	else return;
 	workers = buf;
+	buf.clear();
 	ShowWorkers();
 	system("pause");
 }
